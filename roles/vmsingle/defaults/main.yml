@@ -11,6 +11,7 @@ vmsingle_download_url: "{{ victoriametrics_download_url | default(vmsingle_repo_
 vmsingle_utils_download_url: "{{ victoriametrics_utils_download_url | default(vmsingle_repo_url ~ '/releases/download/' ~ vmsingle_version ~ '/vmutils' ~ vmsingle_platform ~ '-' ~ go_arch ~ '-' ~ vmsingle_version ~ '.tar.gz') }}"
 vmsingle_system_user: "{{ victoriametrics_system_user | default('victoriametrics') }}"
 vmsingle_system_group: "{{ victoriametrics_system_group | default(vmsingle_system_user) }}"
+vmsingle_bin_dir: "/usr/local/bin"
 vmsingle_data_dir: "{{ victoriametrics_data_dir | default('/var/lib/victoria-metrics/') }}"
 vmsingle_self_scrape_interval: "{{ victoriametrics_self_scrape_interval | default('30s') }}"
 # Passed verbatim to -retentionPeriod. With no unit suffix the value is counted

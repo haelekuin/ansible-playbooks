@@ -10,6 +10,7 @@ vlsingle_download_url: "{{ victorialogs_download_url | default(vlsingle_repo_url
 
 vlsingle_system_user: "{{ victorialogs_system_user | default('victorialogs') }}"
 vlsingle_system_group: "{{ victorialogs_system_group | default(vlsingle_system_user) }}"
+vlsingle_bin_dir: "/usr/local/bin"
 vlsingle_data_dir: "{{ victorialogs_data_dir | default('/var/lib/victoria-logs/') }}"
 # Passed verbatim to -retentionPeriod. With no unit suffix the value is counted
 # in months; see the docs for the supported unit suffixes.

@@ -16,10 +16,12 @@
     createhome: false
   when: vtsingle_system_user != "root"
 
-- name: Ensure existence of /usr/local/bin
+- name: Ensure existence of bin directory
   ansible.builtin.file:
-    path: /usr/local/bin
+    path: "{{ vtsingle_bin_dir }}"
     state: directory
+    owner: root
+    group: root
     mode: "0755"
 
 - name: Ensure existence of VictoriaTraces storage directory
@@ -32,7 +34,7 @@
 
 - name: Delete existing VictoriaTraces version if it is different.
   ansible.builtin.file:
-    path: /usr/local/bin/victoria-traces-prod
+    path: "{{ vtsingle_bin_dir }}/victoria-traces-prod"
     state: absent
   when:
     - vtsingle_is_installed.stat.exists | bool
@@ -77,9 +79,9 @@
     - name: Upload VictoriaTraces release binary # noqa: no-handler
       ansible.builtin.copy:
         src: /tmp/vt-single/victoria-traces-prod
-        dest: /usr/local/bin
+        dest: "{{ vtsingle_bin_dir }}/victoria-traces-prod"
         mode: "0751"
-        owner: "{{ vtsingle_system_user }}"
+        owner: root
         group: "{{ vtsingle_system_group }}"
       when:
         - archive_downloaded is changed
@@ -114,20 +116,36 @@
         - not vtsingle_is_installed.stat.exists or
           vtsingle_version not in vtsingle_current_version.stdout
 
-    - name: Replace VictoriaTraces binary at target dir # noqa: no-changed-when
+    - name: Replace VictoriaTraces binary at target dir
       notify: Restart VictoriaTraces service
-      ansible.builtin.shell: |
-        mv /tmp/victoria-traces-prod /usr/local/bin/victoria-traces-prod
-        chmod 0751 /usr/local/bin/victoria-traces-prod
-        chown {{ vtsingle_system_user }}:{{ vtsingle_system_group }} /usr/local/bin/victoria-traces-prod
+      ansible.builtin.copy:
+        src: /tmp/victoria-traces-prod
+        dest: "{{ vtsingle_bin_dir }}/victoria-traces-prod"
+        mode: "0751"
+        owner: root
+        group: "{{ vtsingle_system_group }}"
+        remote_src: true
       when:
         - not ansible_check_mode
         - not vtsingle_is_installed.stat.exists or
           vtsingle_version not in vtsingle_current_version.stdout
 
+  always:
+    - name: Clear download paths
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: absent
+      loop:
+        - /tmp/victoria-traces-prod
+      when:
+        - not ansible_check_mode
+
 - name: Restore SELinux context for VictoriaTraces binary
   ansible.builtin.command:
-    cmd: restorecon -v /usr/local/bin/victoria-traces-prod
+    argv:
+      - restorecon
+      - -v
+      - "{{ vtsingle_bin_dir }}/victoria-traces-prod"
   register: restorecon_result
   changed_when: "'relabeled' in restorecon_result.stdout"
   when:

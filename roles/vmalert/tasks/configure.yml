@@ -60,7 +60,7 @@
     mode: "0600"
     owner: "{{ vmalert_system_user }}"
     group: "{{ vmalert_system_group }}"
-    validate: "/usr/local/bin/vmalert-prod {% for k, v in vmalert_service_args.items() %}{% if k.startswith('license') %} -{{ k }}={{ v | quote }} {% endif %}{% endfor %} -dryRun -rule %s"
+    validate: "{{ vmalert_bin_dir }}/vmalert-prod {% for k, v in vmalert_service_args.items() %}{% if k.startswith('license') %} -{{ k }}={{ v | quote }} {% endif %}{% endfor %} -dryRun -rule %s"
     backup: yes
   no_log: true
   notify: Restart VMalert service

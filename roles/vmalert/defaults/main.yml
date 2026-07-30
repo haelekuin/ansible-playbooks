@@ -10,6 +10,7 @@ vmalert_platform: "{{ vic_vm_alert_platform | default('-linux' if vmalert_versio
 vmalert_download_url: "{{ vic_vm_alert_download_url | default(vmalert_repo_url ~ '/releases/download/' ~ vmalert_version ~ '/vmutils' ~ vmalert_platform ~ '-' ~ go_arch ~ '-' ~ vmalert_version ~ ('-enterprise' if vmalert_enterprise else '') ~ '.tar.gz') }}"
 vmalert_system_user: "{{ vic_vm_alert_system_user | default('vic_vm_alert') }}"
 vmalert_system_group: "{{ vic_vm_alert_system_group | default(vmalert_system_user) }}"
+vmalert_bin_dir: "/usr/local/bin"
 vmalert_config_dir: "{{ vic_vm_alert_config_dir | default('/opt/vic-vmalert') }}"
 vmalert_alertmanager_url: "{{ vic_vm_alert_alertmanager_url | default('http://localhost:9093') }}"
 vmalert_datasource_url: "{{ vic_vm_alert_datasource_url | default('http://localhost:8428') }}"

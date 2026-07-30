@@ -16,13 +16,16 @@
 
 - name: Check if VictoriaTraces is installed
   ansible.builtin.stat:
-    path: /usr/local/bin/victoria-traces-prod
+    path: "{{ vtsingle_bin_dir }}/victoria-traces-prod"
   changed_when: false
   check_mode: false
   register: vtsingle_is_installed
 
 - name: Check current VictoriaTraces version
-  ansible.builtin.command: /usr/local/bin/victoria-traces-prod --version
+  ansible.builtin.command:
+    argv:
+    - "{{ vtsingle_bin_dir }}/victoria-traces-prod"
+    - --version
   changed_when: false
   failed_when: false
   check_mode: false

@@ -7,6 +7,7 @@ vtsingle_download_url: "{{ victoriatraces_download_url | default(vtsingle_repo_u
 
 vtsingle_system_user: "{{ victoriatraces_system_user | default('victoriatraces') }}"
 vtsingle_system_group: "{{ victoriatraces_system_group | default(vtsingle_system_user) }}"
+vtsingle_bin_dir: "/usr/local/bin"
 vtsingle_data_dir: "{{ victoriatraces_data_dir | default('/var/lib/victoria-traces/') }}"
 # Passed verbatim to -retentionPeriod. With no unit suffix the value is counted
 # in months; see the docs for the supported unit suffixes.
