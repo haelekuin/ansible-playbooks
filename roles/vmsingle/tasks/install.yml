@@ -49,6 +49,8 @@
         - not ansible_check_mode
         - not vmsingle_is_installed.stat.exists or
           vmsingle_version not in vmsingle_current_version.stdout
+        - (vmutils_is_installed.results | rejectattr('stat.exists') | list | length > 0) or
+          (vmutils_current_version.results | rejectattr('stdout', 'search', 'vmutils_version') | list | length > 0)
 
     - name: Download and unarchive VictoriaMetrics release binary
       environment:
@@ -91,6 +93,8 @@
       delegate_to: localhost
       when:
         - archive_downloaded is changed
+        - (vmutils_is_installed.results | rejectattr('stat.exists') | list | length > 0) or
+          (vmutils_current_version.results | rejectattr('stdout', 'search', 'vmutils_version') | list | length > 0)
 
     - name: Upload VictoriaMetrics utils release binaries # noqa: no-handler
       ansible.builtin.copy:
@@ -136,6 +140,8 @@
         - not ansible_check_mode
         - not vmsingle_is_installed.stat.exists or
           vmsingle_version not in vmsingle_current_version.stdout
+        - (vmutils_is_installed.results | rejectattr('stat.exists') | list | length > 0) or
+          (vmutils_current_version.results | rejectattr('stdout', 'search', 'vmutils_version') | list | length > 0)
 
     - name: Download and unarchive VictoriaMetrics release binary
       environment:
@@ -175,6 +181,8 @@
         remote_src: yes
       when:
         - archive_downloaded is changed
+        - (vmutils_is_installed.results | rejectattr('stat.exists') | list | length > 0) or
+          (vmutils_current_version.results | rejectattr('stdout', 'search', 'vmutils_version') | list | length > 0)
 
     - name: Replace VictoriaMetrics utils binaries at target dir # noqa: no-handler
       ansible.builtin.copy:

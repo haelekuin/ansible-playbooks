@@ -32,6 +32,30 @@
   register: vmsingle_current_version
   when: vmsingle_is_installed.stat.exists | bool
 
+- name: Check if VictoriaMetrics utils are installed
+  ansible.builtin.stat:
+    path: "{{ vmsingle_bin_dir }}/{{ item }}"
+  changed_when: false
+  check_mode: false
+  register: vmutils_is_installed
+  loop:
+    - vmagent-prod
+    - vmalert-prod
+    - vmauth-prod
+    - vmbackup-prod
+    - vmrestore-prod
+    - vmctl-prod
+
+- name: Check current VictoriaMetrics utils version
+  ansible.builtin.command: "{{ vmsingle_bin_dir }}/{{ item.item }} --version"
+  changed_when: false
+  failed_when: false
+  check_mode: false
+  register: vmutils_current_version
+  loop: "{{ vmutils_is_installed.results | selectattr('stat.exists') | list }}"
+  loop_control:
+    label: "{{ item.item }}"
+
 - name: Check if crontab is present
   ansible.builtin.raw: which crontab
   check_mode: false
